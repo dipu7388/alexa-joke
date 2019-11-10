@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,9 @@
   },
   "homepage": "https://github.com/dipu7388/alexa-joke#readme",
   "dependencies": {
-    "ask-sdk-core": "^2.7.0"
+    "ask-sdk-core": "^2.7.0",
+    "ask-sdk-express-adapter": "^2.0.0",
+    "ask-sdk-model": "^1.23.1",
+    "express": "^4.17.1"
   }
 }

@@ -2,7 +2,18 @@
 // This sample demonstrates handling intents from an Alexa skill using the Alexa Skills Kit SDK (v2).
 // Please visit https://alexa.design/cookbook for additional examples on implementing slots, dialog management,
 // session persistence, api calls, and more.
+
+
+const express = require('express');
+const { ExpressAdapter } = require('ask-sdk-express-adapter');
 const Alexa = require('ask-sdk-core');
+
+const app = express();
+const skillBuilder = Alexa.SkillBuilders.custom();
+const skill = skillBuilder.create();
+const adapter = new ExpressAdapter(skill, true, true);
+const port = process.env.PORT || 3000;
+
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -102,20 +113,36 @@ const ErrorHandler = {
             .getResponse();
     }
 };
+app.post('/', adapter.getRequestHandlers());
 
+app.listen(port);
+
+skillBuilder.addRequestHandlers(
+    LaunchRequestHandler,
+    HelloWorldIntentHandler,
+    HelpIntentHandler,
+    CancelAndStopIntentHandler,
+    SessionEndedRequestHandler,
+    IntentReflectorHandler, // make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
+)
+.addErrorHandlers(
+    ErrorHandler,
+)
 // The SkillBuilder acts as the entry point for your skill, routing all request and response
 // payloads to the handlers above. Make sure any new handlers or interceptors you've
 // defined are included below. The order matters - they're processed top to bottom.
-exports.handler = Alexa.SkillBuilders.custom()
-    .addRequestHandlers(
-        LaunchRequestHandler,
-        HelloWorldIntentHandler,
-        HelpIntentHandler,
-        CancelAndStopIntentHandler,
-        SessionEndedRequestHandler,
-        IntentReflectorHandler, // make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
-    )
-    .addErrorHandlers(
-        ErrorHandler,
-    )
-    .lambda();
+exports.handler = skillBuilder
+// Alexa.SkillBuilders.custom()
+//     .addRequestHandlers(
+//         LaunchRequestHandler,
+//         HelloWorldIntentHandler,
+//         HelpIntentHandler,
+//         CancelAndStopIntentHandler,
+//         SessionEndedRequestHandler,
+//         IntentReflectorHandler, // make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
+//     )
+//     .addErrorHandlers(
+//         ErrorHandler,
+//     )
+//     .lambda();
+   
