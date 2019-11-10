@@ -105,6 +105,7 @@ const ErrorHandler = {
     },
     handle(handlerInput, error) {
         console.log(`~~~~ Error handled: ${error.stack}`);
+        console.log(`Error handled: ${error.message}`);
         const speakOutput = `Sorry, I had trouble doing what you asked. Please try again.`;
 
         return handlerInput.responseBuilder
@@ -127,7 +128,7 @@ skillBuilder.addRequestHandlers(
 )
 .addErrorHandlers(
     ErrorHandler,
-)
+).lambda()
 // The SkillBuilder acts as the entry point for your skill, routing all request and response
 // payloads to the handlers above. Make sure any new handlers or interceptors you've
 // defined are included below. The order matters - they're processed top to bottom.
@@ -145,4 +146,25 @@ exports.handler = skillBuilder
 //         ErrorHandler,
 //     )
 //     .lambda();
-   
+
+
+// exports.handler = async function (event, context) {
+//   console.log(`REQUEST++++${JSON.stringify(event)}`);
+//   if (!skill) {
+//     skill = Alexa.SkillBuilders.custom()
+//       .addRequestHandlers(
+//         LaunchRequestHandler,
+//         HelloWorldIntentHandler,
+//         HelpIntentHandler,
+//         CancelAndStopIntentHandler,
+//         SessionEndedRequestHandler,
+//       )
+//       .addErrorHandlers(ErrorHandler)
+//       .create();
+//   }
+
+//   const response = await skill.invoke(event, context);
+//   console.log(`RESPONSE++++${JSON.stringify(response)}`);
+
+//   return response;
+// };
