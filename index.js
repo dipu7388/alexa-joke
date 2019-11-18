@@ -147,30 +147,15 @@ app.post("/api/sendMail",(req,res)=>{
             accessToken: accessToken
        }
       });
-      let mailOptions = {
-      from: 'dharmadevi60@gmail.com',
-      to: 'aaaa7388@gmail.com',
-      subject: 'Sending Email using Node.js',
-      text: 'That was easy!'
-    };
-      transporter.sendMail(mailOptions, function(error, info){
+   
+      transporter.sendMail(req.body, function(error, info){
       if (error) {
         console.log(error);
+        res.send({error: true, msg: error})
       } else {
         console.log('Email sent: ' + info.response);
-        res.send('Email sent: ' + info.response)
+        res.send({error: false, msg: 'Email sent: ' + info.response})
       }
-    });
-
-    sendmail({
-      from: 'dharmadevi60@gmail.com',
-      to: 'aaaa7388@gmail.com',
-      subject: 'Sending Email using Node.js',
-        html: 'Mail of test sendmail ',
-      }, function(err, reply) {
-        console.log(err && err.stack);
-        console.dir(reply);
-        res.send(reply)
     });
 })
 app.listen(port);
