@@ -24,6 +24,8 @@
     "ask-sdk-express-adapter": "^2.0.0",
     "ask-sdk-model": "^1.23.1",
     "ask-sdk-s3-persistence-adapter": "^2.7.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "nodemailer": "^6.3.1",
+    "sendmail": "^1.6.1"
   }
 }

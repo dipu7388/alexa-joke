@@ -7,6 +7,7 @@
 const express = require('express');
 const { ExpressAdapter } = require('ask-sdk-express-adapter');
 const Alexa = require('ask-sdk-core');
+const nodemailer = require("nodemailer");
 
 const app = express();
 const skillBuilder = Alexa.SkillBuilders.custom();
@@ -14,7 +15,7 @@ const skill = skillBuilder.create();
 const adapter = new ExpressAdapter(skill, true, true);
 const port = process.env.PORT || 3000;
 
-
+const sendmail = require('sendmail')();
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
@@ -116,6 +117,48 @@ const ErrorHandler = {
 };
 app.post('/', adapter.getRequestHandlers());
 
+app.post("/api/sendMail",(req,res)=>{
+
+   console.log("req.body", req.body);
+   console.log("req.params", req.params);
+   console.log("req.query", req.query);
+
+    let  transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: {
+          user: 'dharmadevi60@gmail.com',
+          pass: '9198428747'
+        }
+      });
+      let mailOptions = {
+      from: 'dharmadevi60@gmail.com',
+      to: 'aaaa7388@gmail.com',
+      subject: 'Sending Email using Node.js',
+      text: 'That was easy!'
+    };
+      transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+        res.send('Email sent: ' + info.response)
+      }
+    });
+
+    sendmail({
+      from: 'dharmadevi60@gmail.com',
+      to: 'aaaa7388@gmail.com',
+      subject: 'Sending Email using Node.js',
+        html: 'Mail of test sendmail ',
+      }, function(err, reply) {
+        console.log(err && err.stack);
+        console.dir(reply);
+        res.send(reply)
+    });
+})
 app.listen(port);
 
 skillBuilder.addRequestHandlers(
@@ -133,38 +176,3 @@ skillBuilder.addRequestHandlers(
 // payloads to the handlers above. Make sure any new handlers or interceptors you've
 // defined are included below. The order matters - they're processed top to bottom.
 exports.handler = skillBuilder
-// Alexa.SkillBuilders.custom()
-//     .addRequestHandlers(
-//         LaunchRequestHandler,
-//         HelloWorldIntentHandler,
-//         HelpIntentHandler,
-//         CancelAndStopIntentHandler,
-//         SessionEndedRequestHandler,
-//         IntentReflectorHandler, // make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
-//     )
-//     .addErrorHandlers(
-//         ErrorHandler,
-//     )
-//     .lambda();
-
-
-// exports.handler = async function (event, context) {
-//   console.log(`REQUEST++++${JSON.stringify(event)}`);
-//   if (!skill) {
-//     skill = Alexa.SkillBuilders.custom()
-//       .addRequestHandlers(
-//         LaunchRequestHandler,
-//         HelloWorldIntentHandler,
-//         HelpIntentHandler,
-//         CancelAndStopIntentHandler,
-//         SessionEndedRequestHandler,
-//       )
-//       .addErrorHandlers(ErrorHandler)
-//       .create();
-//   }
-
-//   const response = await skill.invoke(event, context);
-//   console.log(`RESPONSE++++${JSON.stringify(response)}`);
-
-//   return response;
-// };
