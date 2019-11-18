@@ -8,13 +8,23 @@ const express = require('express');
 const { ExpressAdapter } = require('ask-sdk-express-adapter');
 const Alexa = require('ask-sdk-core');
 const nodemailer = require("nodemailer");
-
+const { google } = require("googleapis");
+const OAuth2 = google.auth.OAuth2;
 const app = express();
 const skillBuilder = Alexa.SkillBuilders.custom();
 const skill = skillBuilder.create();
 const adapter = new ExpressAdapter(skill, true, true);
 const port = process.env.PORT || 3000;
+const oauth2Client = new OAuth2(
+    "Y400967547592-nb22qb1d7qblk6j10rtvbfnn4se6gf5p.apps.googleusercontent.com",
+    "YZhD96lhw5qoxI5EIiC66X1M", 
+    "https://developers.google.com/oauthplayground" 
+);
 
+oauth2Client.setCredentials({
+    refresh_token: "1//04T_eZ6wXPMCyCgYIARAAGAQSNwF-L9Irccq-r8BrVY8AUKrxce9aPeFb4ZfTNVVPFfZf_Rdqg1I8topFiczGVribQ0WJ8XXZKxE"
+});
+const accessToken = oauth2Client.getAccessToken()
 const sendmail = require('sendmail')();
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -129,9 +139,13 @@ app.post("/api/sendMail",(req,res)=>{
         port: 587,
         secure: false,
         auth: {
-          user: 'dharmadevi60@gmail.com',
-          pass: '9198428747'
-        }
+            type: "OAuth2",
+            user: "dharmadevi60@gmail.com", 
+            clientId: "400967547592-nb22qb1d7qblk6j10rtvbfnn4se6gf5p.apps.googleusercontent.com",
+            clientSecret: "YZhD96lhw5qoxI5EIiC66X1M",
+            refreshToken: "1//04T_eZ6wXPMCyCgYIARAAGAQSNwF-L9Irccq-r8BrVY8AUKrxce9aPeFb4ZfTNVVPFfZf_Rdqg1I8topFiczGVribQ0WJ8XXZKxE",
+            accessToken: accessToken
+       }
       });
       let mailOptions = {
       from: 'dharmadevi60@gmail.com',
